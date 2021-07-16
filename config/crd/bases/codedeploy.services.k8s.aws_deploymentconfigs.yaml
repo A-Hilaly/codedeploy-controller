@@ -1,0 +1,180 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.0
+  creationTimestamp: null
+  name: deploymentconfigs.codedeploy.services.k8s.aws
+spec:
+  group: codedeploy.services.k8s.aws
+  names:
+    kind: DeploymentConfig
+    listKind: DeploymentConfigList
+    plural: deploymentconfigs
+    singular: deploymentconfig
+  scope: Namespaced
+  versions:
+  - name: v1alpha2
+    schema:
+      openAPIV3Schema:
+        description: DeploymentConfig is the Schema for the DeploymentConfigs API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: DeploymentConfigSpec defines the desired state of DeploymentConfig.
+            properties:
+              computePlatform:
+                description: The destination platform type for the deployment (Lambda,
+                  Server, or ECS).
+                type: string
+              deploymentConfigName:
+                description: The name of the deployment configuration to create.
+                type: string
+              minimumHealthyHosts:
+                description: "The minimum number of healthy instances that should
+                  be available at any time during the deployment. There are two parameters
+                  expected in the input: type and value. \n The type parameter takes
+                  either of the following values: \n    * HOST_COUNT: The value parameter
+                  represents the minimum number of healthy    instances as an absolute
+                  value. \n    * FLEET_PERCENT: The value parameter represents the
+                  minimum number of    healthy instances as a percentage of the total
+                  number of instances in    the deployment. If you specify FLEET_PERCENT,
+                  at the start of the deployment,    AWS CodeDeploy converts the percentage
+                  to the equivalent number of instances    and rounds up fractional
+                  instances. \n The value parameter takes an integer. \n For example,
+                  to set a minimum of 95% healthy instance, specify a type of FLEET_PERCENT
+                  and a value of 95."
+                properties:
+                  type_:
+                    type: string
+                  value:
+                    format: int64
+                    type: integer
+                type: object
+              trafficRoutingConfig:
+                description: The configuration that specifies how the deployment traffic
+                  is routed.
+                properties:
+                  timeBasedCanary:
+                    description: A configuration that shifts traffic from one version
+                      of a Lambda function or ECS task set to another in two increments.
+                      The original and target Lambda function versions or ECS task
+                      sets are specified in the deployment's AppSpec file.
+                    properties:
+                      canaryInterval:
+                        format: int64
+                        type: integer
+                      canaryPercentage:
+                        format: int64
+                        type: integer
+                    type: object
+                  timeBasedLinear:
+                    description: A configuration that shifts traffic from one version
+                      of a Lambda function or ECS task set to another in equal increments,
+                      with an equal number of minutes between each increment. The
+                      original and target Lambda function versions or ECS task sets
+                      are specified in the deployment's AppSpec file.
+                    properties:
+                      linearInterval:
+                        format: int64
+                        type: integer
+                      linearPercentage:
+                        format: int64
+                        type: integer
+                    type: object
+                  type_:
+                    type: string
+                type: object
+            required:
+            - deploymentConfigName
+            type: object
+          status:
+            description: DeploymentConfigStatus defines the observed state of DeploymentConfig
+            properties:
+              ackResourceMetadata:
+                description: All CRs managed by ACK have a common `Status.ACKResourceMetadata`
+                  member that is used to contain resource sync state, account ownership,
+                  constructed ARN for the resource
+                properties:
+                  arn:
+                    description: 'ARN is the Amazon Resource Name for the resource.
+                      This is a globally-unique identifier and is set only by the
+                      ACK service controller once the controller has orchestrated
+                      the creation of the resource OR when it has verified that an
+                      "adopted" resource (a resource where the ARN annotation was
+                      set by the Kubernetes user on the CR) exists and matches the
+                      supplied CR''s Spec field values. TODO(vijat@): Find a better
+                      strategy for resources that do not have ARN in CreateOutputResponse
+                      https://github.com/aws/aws-controllers-k8s/issues/270'
+                    type: string
+                  ownerAccountID:
+                    description: OwnerAccountID is the AWS Account ID of the account
+                      that owns the backend AWS service API resource.
+                    type: string
+                required:
+                - ownerAccountID
+                type: object
+              conditions:
+                description: All CRS managed by ACK have a common `Status.Conditions`
+                  member that contains a collection of `ackv1alpha1.Condition` objects
+                  that describe the various terminal states of the CR and its backend
+                  AWS service API resource
+                items:
+                  description: Condition is the common struct used by all CRDs managed
+                    by ACK service controllers to indicate terminal states  of the
+                    CR and its backend AWS service API resource
+                  properties:
+                    lastTransitionTime:
+                      description: Last time the condition transitioned from one status
+                        to another.
+                      format: date-time
+                      type: string
+                    message:
+                      description: A human readable message indicating details about
+                        the transition.
+                      type: string
+                    reason:
+                      description: The reason for the condition's last transition.
+                      type: string
+                    status:
+                      description: Status of the condition, one of True, False, Unknown.
+                      type: string
+                    type:
+                      description: Type is the type of the Condition
+                      type: string
+                  required:
+                  - status
+                  - type
+                  type: object
+                type: array
+              deploymentConfigID:
+                description: A unique deployment configuration ID.
+                type: string
+            required:
+            - ackResourceMetadata
+            - conditions
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

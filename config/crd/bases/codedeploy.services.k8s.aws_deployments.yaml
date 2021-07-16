@@ -1,0 +1,275 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.0
+  creationTimestamp: null
+  name: deployments.codedeploy.services.k8s.aws
+spec:
+  group: codedeploy.services.k8s.aws
+  names:
+    kind: Deployment
+    listKind: DeploymentList
+    plural: deployments
+    singular: deployment
+  scope: Namespaced
+  versions:
+  - name: v1alpha2
+    schema:
+      openAPIV3Schema:
+        description: Deployment is the Schema for the Deployments API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: DeploymentSpec defines the desired state of Deployment.
+            properties:
+              applicationName:
+                description: The name of an AWS CodeDeploy application associated
+                  with the IAM user or AWS account.
+                type: string
+              autoRollbackConfiguration:
+                description: Configuration information for an automatic rollback that
+                  is added when a deployment is created.
+                properties:
+                  enabled:
+                    type: boolean
+                  events:
+                    items:
+                      type: string
+                    type: array
+                type: object
+              deploymentConfigName:
+                description: "The name of a deployment configuration associated with
+                  the IAM user or AWS account. \n If not specified, the value configured
+                  in the deployment group is used as the default. If the deployment
+                  group does not have a deployment configuration associated with it,
+                  CodeDeployDefault.OneAtATime is used by default."
+                type: string
+              deploymentGroupName:
+                description: The name of the deployment group.
+                type: string
+              description:
+                description: A comment about the deployment.
+                type: string
+              fileExistsBehavior:
+                description: "Information about how AWS CodeDeploy handles files that
+                  already exist in a deployment target location but weren't part of
+                  the previous successful deployment. \n The fileExistsBehavior parameter
+                  takes any of the following values: \n    * DISALLOW: The deployment
+                  fails. This is also the default behavior if    no option is specified.
+                  \n    * OVERWRITE: The version of the file from the application
+                  revision currently    being deployed replaces the version already
+                  on the instance. \n    * RETAIN: The version of the file already
+                  on the instance is kept and    used as part of the new deployment."
+                type: string
+              ignoreApplicationStopFailures:
+                description: "If true, then if an ApplicationStop, BeforeBlockTraffic,
+                  or AfterBlockTraffic deployment lifecycle event to an instance fails,
+                  then the deployment continues to the next deployment lifecycle event.
+                  For example, if ApplicationStop fails, the deployment continues
+                  with DownloadBundle. If BeforeBlockTraffic fails, the deployment
+                  continues with BlockTraffic. If AfterBlockTraffic fails, the deployment
+                  continues with ApplicationStop. \n If false or not specified, then
+                  if a lifecycle event fails during a deployment to an instance, that
+                  deployment fails. If deployment to that instance is part of an overall
+                  deployment and the number of healthy hosts is not less than the
+                  minimum number of healthy hosts, then a deployment to the next instance
+                  is attempted. \n During a deployment, the AWS CodeDeploy agent runs
+                  the scripts specified for ApplicationStop, BeforeBlockTraffic, and
+                  AfterBlockTraffic in the AppSpec file from the previous successful
+                  deployment. (All other scripts are run from the AppSpec file in
+                  the current deployment.) If one of these scripts contains an error
+                  and does not run successfully, the deployment can fail. \n If the
+                  cause of the failure is a script from the last successful deployment
+                  that will never run successfully, create a new deployment and use
+                  ignoreApplicationStopFailures to specify that the ApplicationStop,
+                  BeforeBlockTraffic, and AfterBlockTraffic failures should be ignored."
+                type: boolean
+              revision:
+                description: The type and location of the revision to deploy.
+                properties:
+                  appSpecContent:
+                    description: A revision for an AWS Lambda or Amazon ECS deployment
+                      that is a YAML-formatted or JSON-formatted string. For AWS Lambda
+                      and Amazon ECS deployments, the revision is the same as the
+                      AppSpec file. This method replaces the deprecated RawString
+                      data type.
+                    properties:
+                      content:
+                        type: string
+                      sha256:
+                        type: string
+                    type: object
+                  gitHubLocation:
+                    description: Information about the location of application artifacts
+                      stored in GitHub.
+                    properties:
+                      commitID:
+                        type: string
+                      repository:
+                        type: string
+                    type: object
+                  revisionType:
+                    type: string
+                  s3Location:
+                    description: Information about the location of application artifacts
+                      stored in Amazon S3.
+                    properties:
+                      bucket:
+                        type: string
+                      bundleType:
+                        type: string
+                      eTag:
+                        type: string
+                      key:
+                        type: string
+                      version:
+                        type: string
+                    type: object
+                  string:
+                    description: A revision for an AWS Lambda deployment that is a
+                      YAML-formatted or JSON-formatted string. For AWS Lambda deployments,
+                      the revision is the same as the AppSpec file.
+                    properties:
+                      content:
+                        type: string
+                      sha256:
+                        type: string
+                    type: object
+                type: object
+              targetInstances:
+                description: Information about the instances that belong to the replacement
+                  environment in a blue/green deployment.
+                properties:
+                  autoScalingGroups:
+                    items:
+                      type: string
+                    type: array
+                  ec2TagSet:
+                    description: Information about groups of EC2 instance tags.
+                    properties:
+                      ec2TagSetList:
+                        items:
+                          items:
+                            description: Information about an EC2 tag filter.
+                            properties:
+                              key:
+                                type: string
+                              type_:
+                                type: string
+                              value:
+                                type: string
+                            type: object
+                          type: array
+                        type: array
+                    type: object
+                  tagFilters:
+                    items:
+                      description: Information about an EC2 tag filter.
+                      properties:
+                        key:
+                          type: string
+                        type_:
+                          type: string
+                        value:
+                          type: string
+                      type: object
+                    type: array
+                type: object
+              updateOutdatedInstancesOnly:
+                description: Indicates whether to deploy to all instances or only
+                  to instances that are not running the latest application revision.
+                type: boolean
+            required:
+            - applicationName
+            type: object
+          status:
+            description: DeploymentStatus defines the observed state of Deployment
+            properties:
+              ackResourceMetadata:
+                description: All CRs managed by ACK have a common `Status.ACKResourceMetadata`
+                  member that is used to contain resource sync state, account ownership,
+                  constructed ARN for the resource
+                properties:
+                  arn:
+                    description: 'ARN is the Amazon Resource Name for the resource.
+                      This is a globally-unique identifier and is set only by the
+                      ACK service controller once the controller has orchestrated
+                      the creation of the resource OR when it has verified that an
+                      "adopted" resource (a resource where the ARN annotation was
+                      set by the Kubernetes user on the CR) exists and matches the
+                      supplied CR''s Spec field values. TODO(vijat@): Find a better
+                      strategy for resources that do not have ARN in CreateOutputResponse
+                      https://github.com/aws/aws-controllers-k8s/issues/270'
+                    type: string
+                  ownerAccountID:
+                    description: OwnerAccountID is the AWS Account ID of the account
+                      that owns the backend AWS service API resource.
+                    type: string
+                required:
+                - ownerAccountID
+                type: object
+              conditions:
+                description: All CRS managed by ACK have a common `Status.Conditions`
+                  member that contains a collection of `ackv1alpha1.Condition` objects
+                  that describe the various terminal states of the CR and its backend
+                  AWS service API resource
+                items:
+                  description: Condition is the common struct used by all CRDs managed
+                    by ACK service controllers to indicate terminal states  of the
+                    CR and its backend AWS service API resource
+                  properties:
+                    lastTransitionTime:
+                      description: Last time the condition transitioned from one status
+                        to another.
+                      format: date-time
+                      type: string
+                    message:
+                      description: A human readable message indicating details about
+                        the transition.
+                      type: string
+                    reason:
+                      description: The reason for the condition's last transition.
+                      type: string
+                    status:
+                      description: Status of the condition, one of True, False, Unknown.
+                      type: string
+                    type:
+                      description: Type is the type of the Condition
+                      type: string
+                  required:
+                  - status
+                  - type
+                  type: object
+                type: array
+              deploymentID:
+                description: The unique ID of a deployment.
+                type: string
+            required:
+            - ackResourceMetadata
+            - conditions
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

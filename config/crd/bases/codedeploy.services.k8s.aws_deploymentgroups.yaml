@@ -1,0 +1,415 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.0
+  creationTimestamp: null
+  name: deploymentgroups.codedeploy.services.k8s.aws
+spec:
+  group: codedeploy.services.k8s.aws
+  names:
+    kind: DeploymentGroup
+    listKind: DeploymentGroupList
+    plural: deploymentgroups
+    singular: deploymentgroup
+  scope: Namespaced
+  versions:
+  - name: v1alpha2
+    schema:
+      openAPIV3Schema:
+        description: DeploymentGroup is the Schema for the DeploymentGroups API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: DeploymentGroupSpec defines the desired state of DeploymentGroup.
+            properties:
+              alarmConfiguration:
+                description: Information to add about Amazon CloudWatch alarms when
+                  the deployment group is created.
+                properties:
+                  alarms:
+                    items:
+                      description: Information about an alarm.
+                      properties:
+                        name:
+                          type: string
+                      type: object
+                    type: array
+                  enabled:
+                    type: boolean
+                  ignorePollAlarmFailure:
+                    type: boolean
+                type: object
+              applicationName:
+                description: The name of an AWS CodeDeploy application associated
+                  with the IAM user or AWS account.
+                type: string
+              autoRollbackConfiguration:
+                description: Configuration information for an automatic rollback that
+                  is added when a deployment group is created.
+                properties:
+                  enabled:
+                    type: boolean
+                  events:
+                    items:
+                      type: string
+                    type: array
+                type: object
+              autoScalingGroups:
+                description: A list of associated Amazon EC2 Auto Scaling groups.
+                items:
+                  type: string
+                type: array
+              blueGreenDeploymentConfiguration:
+                description: Information about blue/green deployment options for a
+                  deployment group.
+                properties:
+                  deploymentReadyOption:
+                    description: Information about how traffic is rerouted to instances
+                      in a replacement environment in a blue/green deployment.
+                    properties:
+                      actionOnTimeout:
+                        type: string
+                      waitTimeInMinutes:
+                        format: int64
+                        type: integer
+                    type: object
+                  greenFleetProvisioningOption:
+                    description: Information about the instances that belong to the
+                      replacement environment in a blue/green deployment.
+                    properties:
+                      action:
+                        type: string
+                    type: object
+                  terminateBlueInstancesOnDeploymentSuccess:
+                    description: Information about whether instances in the original
+                      environment are terminated when a blue/green deployment is successful.
+                      BlueInstanceTerminationOption does not apply to Lambda deployments.
+                    properties:
+                      action:
+                        type: string
+                      terminationWaitTimeInMinutes:
+                        format: int64
+                        type: integer
+                    type: object
+                type: object
+              deploymentConfigName:
+                description: "If specified, the deployment configuration name can
+                  be either one of the predefined configurations provided with AWS
+                  CodeDeploy or a custom deployment configuration that you create
+                  by calling the create deployment configuration operation. \n CodeDeployDefault.OneAtATime
+                  is the default deployment configuration. It is used if a configuration
+                  isn't specified for the deployment or deployment group. \n For more
+                  information about the predefined deployment configurations in AWS
+                  CodeDeploy, see Working with Deployment Configurations in CodeDeploy
+                  (https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations.html)
+                  in the AWS CodeDeploy User Guide."
+                type: string
+              deploymentGroupName:
+                description: The name of a new deployment group for the specified
+                  application.
+                type: string
+              deploymentStyle:
+                description: Information about the type of deployment, in-place or
+                  blue/green, that you want to run and whether to route deployment
+                  traffic behind a load balancer.
+                properties:
+                  deploymentOption:
+                    type: string
+                  deploymentType:
+                    type: string
+                type: object
+              ec2TagFilters:
+                description: The Amazon EC2 tags on which to filter. The deployment
+                  group includes EC2 instances with any of the specified tags. Cannot
+                  be used in the same call as ec2TagSet.
+                items:
+                  description: Information about an EC2 tag filter.
+                  properties:
+                    key:
+                      type: string
+                    type_:
+                      type: string
+                    value:
+                      type: string
+                  type: object
+                type: array
+              ec2TagSet:
+                description: Information about groups of tags applied to EC2 instances.
+                  The deployment group includes only EC2 instances identified by all
+                  the tag groups. Cannot be used in the same call as ec2TagFilters.
+                properties:
+                  ec2TagSetList:
+                    items:
+                      items:
+                        description: Information about an EC2 tag filter.
+                        properties:
+                          key:
+                            type: string
+                          type_:
+                            type: string
+                          value:
+                            type: string
+                        type: object
+                      type: array
+                    type: array
+                type: object
+              ecsServices:
+                description: The target Amazon ECS services in the deployment group.
+                  This applies only to deployment groups that use the Amazon ECS compute
+                  platform. A target Amazon ECS service is specified as an Amazon
+                  ECS cluster and service name pair using the format <clustername>:<servicename>.
+                items:
+                  description: Contains the service and cluster names used to identify
+                    an Amazon ECS deployment's target.
+                  properties:
+                    clusterName:
+                      type: string
+                    serviceName:
+                      type: string
+                  type: object
+                type: array
+              loadBalancerInfo:
+                description: Information about the load balancer used in a deployment.
+                properties:
+                  elbInfoList:
+                    items:
+                      description: Information about a load balancer in Elastic Load
+                        Balancing to use in a deployment. Instances are registered
+                        directly with a load balancer, and traffic is routed to the
+                        load balancer.
+                      properties:
+                        name:
+                          type: string
+                      type: object
+                    type: array
+                  targetGroupInfoList:
+                    items:
+                      description: Information about a target group in Elastic Load
+                        Balancing to use in a deployment. Instances are registered
+                        as targets in a target group, and traffic is routed to the
+                        target group.
+                      properties:
+                        name:
+                          type: string
+                      type: object
+                    type: array
+                  targetGroupPairInfoList:
+                    items:
+                      description: Information about two target groups and how traffic
+                        is routed during an Amazon ECS deployment. An optional test
+                        traffic route can be specified.
+                      properties:
+                        prodTrafficRoute:
+                          description: Information about a listener. The listener
+                            contains the path used to route traffic that is received
+                            from the load balancer to a target group.
+                          properties:
+                            listenerARNs:
+                              items:
+                                type: string
+                              type: array
+                          type: object
+                        targetGroups:
+                          items:
+                            description: Information about a target group in Elastic
+                              Load Balancing to use in a deployment. Instances are
+                              registered as targets in a target group, and traffic
+                              is routed to the target group.
+                            properties:
+                              name:
+                                type: string
+                            type: object
+                          type: array
+                        testTrafficRoute:
+                          description: Information about a listener. The listener
+                            contains the path used to route traffic that is received
+                            from the load balancer to a target group.
+                          properties:
+                            listenerARNs:
+                              items:
+                                type: string
+                              type: array
+                          type: object
+                      type: object
+                    type: array
+                type: object
+              onPremisesInstanceTagFilters:
+                description: The on-premises instance tags on which to filter. The
+                  deployment group includes on-premises instances with any of the
+                  specified tags. Cannot be used in the same call as OnPremisesTagSet.
+                items:
+                  description: Information about an on-premises instance tag filter.
+                  properties:
+                    key:
+                      type: string
+                    type_:
+                      type: string
+                    value:
+                      type: string
+                  type: object
+                type: array
+              onPremisesTagSet:
+                description: Information about groups of tags applied to on-premises
+                  instances. The deployment group includes only on-premises instances
+                  identified by all of the tag groups. Cannot be used in the same
+                  call as onPremisesInstanceTagFilters.
+                properties:
+                  onPremisesTagSetList:
+                    items:
+                      items:
+                        description: Information about an on-premises instance tag
+                          filter.
+                        properties:
+                          key:
+                            type: string
+                          type_:
+                            type: string
+                          value:
+                            type: string
+                        type: object
+                      type: array
+                    type: array
+                type: object
+              outdatedInstancesStrategy:
+                description: "Indicates what happens when new EC2 instances are launched
+                  mid-deployment and do not receive the deployed application revision.
+                  \n If this option is set to UPDATE or is unspecified, CodeDeploy
+                  initiates one or more 'auto-update outdated instances' deployments
+                  to apply the deployed application revision to the new EC2 instances.
+                  \n If this option is set to IGNORE, CodeDeploy does not initiate
+                  a deployment to update the new EC2 instances. This may result in
+                  instances having different revisions."
+                type: string
+              serviceRoleARN:
+                description: A service role Amazon Resource Name (ARN) that allows
+                  AWS CodeDeploy to act on the user's behalf when interacting with
+                  AWS services.
+                type: string
+              tags:
+                description: The metadata that you apply to CodeDeploy deployment
+                  groups to help you organize and categorize them. Each tag consists
+                  of a key and an optional value, both of which you define.
+                items:
+                  description: Information about a tag.
+                  properties:
+                    key:
+                      type: string
+                    value:
+                      type: string
+                  type: object
+                type: array
+              triggerConfigurations:
+                description: Information about triggers to create when the deployment
+                  group is created. For examples, see Create a Trigger for an AWS
+                  CodeDeploy Event (https://docs.aws.amazon.com/codedeploy/latest/userguide/how-to-notify-sns.html)
+                  in the AWS CodeDeploy User Guide.
+                items:
+                  description: Information about notification triggers for the deployment
+                    group.
+                  properties:
+                    triggerEvents:
+                      items:
+                        type: string
+                      type: array
+                    triggerName:
+                      type: string
+                    triggerTargetARN:
+                      type: string
+                  type: object
+                type: array
+            required:
+            - applicationName
+            - deploymentGroupName
+            - serviceRoleARN
+            type: object
+          status:
+            description: DeploymentGroupStatus defines the observed state of DeploymentGroup
+            properties:
+              ackResourceMetadata:
+                description: All CRs managed by ACK have a common `Status.ACKResourceMetadata`
+                  member that is used to contain resource sync state, account ownership,
+                  constructed ARN for the resource
+                properties:
+                  arn:
+                    description: 'ARN is the Amazon Resource Name for the resource.
+                      This is a globally-unique identifier and is set only by the
+                      ACK service controller once the controller has orchestrated
+                      the creation of the resource OR when it has verified that an
+                      "adopted" resource (a resource where the ARN annotation was
+                      set by the Kubernetes user on the CR) exists and matches the
+                      supplied CR''s Spec field values. TODO(vijat@): Find a better
+                      strategy for resources that do not have ARN in CreateOutputResponse
+                      https://github.com/aws/aws-controllers-k8s/issues/270'
+                    type: string
+                  ownerAccountID:
+                    description: OwnerAccountID is the AWS Account ID of the account
+                      that owns the backend AWS service API resource.
+                    type: string
+                required:
+                - ownerAccountID
+                type: object
+              conditions:
+                description: All CRS managed by ACK have a common `Status.Conditions`
+                  member that contains a collection of `ackv1alpha1.Condition` objects
+                  that describe the various terminal states of the CR and its backend
+                  AWS service API resource
+                items:
+                  description: Condition is the common struct used by all CRDs managed
+                    by ACK service controllers to indicate terminal states  of the
+                    CR and its backend AWS service API resource
+                  properties:
+                    lastTransitionTime:
+                      description: Last time the condition transitioned from one status
+                        to another.
+                      format: date-time
+                      type: string
+                    message:
+                      description: A human readable message indicating details about
+                        the transition.
+                      type: string
+                    reason:
+                      description: The reason for the condition's last transition.
+                      type: string
+                    status:
+                      description: Status of the condition, one of True, False, Unknown.
+                      type: string
+                    type:
+                      description: Type is the type of the Condition
+                      type: string
+                  required:
+                  - status
+                  - type
+                  type: object
+                type: array
+              deploymentGroupID:
+                description: A unique deployment group ID.
+                type: string
+            required:
+            - ackResourceMetadata
+            - conditions
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

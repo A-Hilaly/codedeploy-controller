@@ -1,0 +1,611 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.0
+  creationTimestamp: null
+  name: projects.codebuild.services.k8s.aws
+spec:
+  group: codebuild.services.k8s.aws
+  names:
+    kind: Project
+    listKind: ProjectList
+    plural: projects
+    singular: project
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Project is the Schema for the Projects API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: "ProjectSpec defines the desired state of Project. \n Information
+              about a build project."
+            properties:
+              artifacts:
+                description: Information about the build output artifacts for the
+                  build project.
+                properties:
+                  artifactIdentifier:
+                    type: string
+                  bucketOwnerAccess:
+                    description: "Specifies the access for objects that are uploaded
+                      to an Amazon S3 bucket that is owned by another account. \n
+                      By default, only the account that uploads the objects to the
+                      bucket has access to these objects. This property allows you
+                      to give the bucket owner access to these objects. \n NONE \n
+                      The bucket owner does not have access to the objects. This is
+                      the default. \n READ_ONLY \n The bucket owner has read only
+                      access to the objects. The uploading account retains ownership
+                      of the objects. \n FULL \n The bucket owner has full access
+                      to the objects. Object ownership is determined by the following
+                      criteria: \n    * If the bucket is configured with the Bucket
+                      owner preferred setting,    the bucket owner owns the objects.
+                      The uploading account will have object    access as specified
+                      by the bucket's policy. \n    * Otherwise, the uploading account
+                      retains ownership of the objects. \n For more information about
+                      Amazon S3 object ownership, see Controlling ownership of uploaded
+                      objects using S3 Object Ownership (https://docs.aws.amazon.com/AmazonS3/latest/userguide/about-object-ownership.html)
+                      in the Amazon Simple Storage Service User Guide."
+                    type: string
+                  encryptionDisabled:
+                    type: boolean
+                  location:
+                    type: string
+                  name:
+                    type: string
+                  namespaceType:
+                    type: string
+                  overrideArtifactName:
+                    type: boolean
+                  packaging:
+                    type: string
+                  path:
+                    type: string
+                  type_:
+                    type: string
+                type: object
+              badgeEnabled:
+                description: Set this to true to generate a publicly accessible URL
+                  for your project's build badge.
+                type: boolean
+              buildBatchConfig:
+                description: A ProjectBuildBatchConfig object that defines the batch
+                  build options for the project.
+                properties:
+                  combineArtifacts:
+                    type: boolean
+                  restrictions:
+                    description: Specifies restrictions for the batch build.
+                    properties:
+                      computeTypesAllowed:
+                        items:
+                          type: string
+                        type: array
+                      maximumBuildsAllowed:
+                        format: int64
+                        type: integer
+                    type: object
+                  serviceRole:
+                    type: string
+                  timeoutInMins:
+                    format: int64
+                    type: integer
+                type: object
+              cache:
+                description: Stores recently used information so that it can be quickly
+                  accessed at a later time.
+                properties:
+                  location:
+                    type: string
+                  modes:
+                    items:
+                      type: string
+                    type: array
+                  type_:
+                    type: string
+                type: object
+              concurrentBuildLimit:
+                description: "The maximum number of concurrent builds that are allowed
+                  for this project. \n New builds are only started if the current
+                  number of builds is less than or equal to this limit. If the current
+                  build count meets this limit, new builds are throttled and are not
+                  run."
+                format: int64
+                type: integer
+              description:
+                description: A description that makes the build project easy to identify.
+                type: string
+              encryptionKey:
+                description: "The AWS Key Management Service (AWS KMS) customer master
+                  key (CMK) to be used for encrypting the build output artifacts.
+                  \n You can use a cross-account KMS key to encrypt the build output
+                  artifacts if your service role has permission to that key. \n You
+                  can specify either the Amazon Resource Name (ARN) of the CMK or,
+                  if available, the CMK's alias (using the format alias/<alias-name>)."
+                type: string
+              environment:
+                description: Information about the build environment for the build
+                  project.
+                properties:
+                  certificate:
+                    type: string
+                  computeType:
+                    type: string
+                  environmentVariables:
+                    items:
+                      description: Information about an environment variable for a
+                        build project or a build.
+                      properties:
+                        name:
+                          type: string
+                        type_:
+                          type: string
+                        value:
+                          type: string
+                      type: object
+                    type: array
+                  image:
+                    type: string
+                  imagePullCredentialsType:
+                    type: string
+                  privilegedMode:
+                    type: boolean
+                  registryCredential:
+                    description: "Information about credentials that provide access
+                      to a private Docker registry. When this is set: \n    * imagePullCredentialsType
+                      must be set to SERVICE_ROLE. \n    * images cannot be curated
+                      or an Amazon ECR image. \n For more information, see Private
+                      Registry with AWS Secrets Manager Sample for AWS CodeBuild (https://docs.aws.amazon.com/codebuild/latest/userguide/sample-private-registry.html)."
+                    properties:
+                      credential:
+                        type: string
+                      credentialProvider:
+                        type: string
+                    type: object
+                  type_:
+                    type: string
+                type: object
+              fileSystemLocations:
+                description: An array of ProjectFileSystemLocation objects for a CodeBuild
+                  build project. A ProjectFileSystemLocation object specifies the
+                  identifier, location, mountOptions, mountPoint, and type of a file
+                  system created using Amazon Elastic File System.
+                items:
+                  description: Information about a file system created by Amazon Elastic
+                    File System (EFS). For more information, see What Is Amazon Elastic
+                    File System? (https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html)
+                  properties:
+                    identifier:
+                      type: string
+                    location:
+                      type: string
+                    mountOptions:
+                      type: string
+                    mountPoint:
+                      type: string
+                    type_:
+                      type: string
+                  type: object
+                type: array
+              logsConfig:
+                description: Information about logs for the build project. These can
+                  be logs in Amazon CloudWatch Logs, logs uploaded to a specified
+                  S3 bucket, or both.
+                properties:
+                  cloudWatchLogs:
+                    description: Information about Amazon CloudWatch Logs for a build
+                      project.
+                    properties:
+                      groupName:
+                        type: string
+                      status:
+                        type: string
+                      streamName:
+                        type: string
+                    type: object
+                  s3Logs:
+                    description: Information about S3 logs for a build project.
+                    properties:
+                      bucketOwnerAccess:
+                        description: "Specifies the access for objects that are uploaded
+                          to an Amazon S3 bucket that is owned by another account.
+                          \n By default, only the account that uploads the objects
+                          to the bucket has access to these objects. This property
+                          allows you to give the bucket owner access to these objects.
+                          \n NONE \n The bucket owner does not have access to the
+                          objects. This is the default. \n READ_ONLY \n The bucket
+                          owner has read only access to the objects. The uploading
+                          account retains ownership of the objects. \n FULL \n The
+                          bucket owner has full access to the objects. Object ownership
+                          is determined by the following criteria: \n    * If the
+                          bucket is configured with the Bucket owner preferred setting,
+                          \   the bucket owner owns the objects. The uploading account
+                          will have object    access as specified by the bucket's
+                          policy. \n    * Otherwise, the uploading account retains
+                          ownership of the objects. \n For more information about
+                          Amazon S3 object ownership, see Controlling ownership of
+                          uploaded objects using S3 Object Ownership (https://docs.aws.amazon.com/AmazonS3/latest/userguide/about-object-ownership.html)
+                          in the Amazon Simple Storage Service User Guide."
+                        type: string
+                      encryptionDisabled:
+                        type: boolean
+                      location:
+                        type: string
+                      status:
+                        type: string
+                    type: object
+                type: object
+              name:
+                description: The name of the build project.
+                type: string
+              queuedTimeoutInMinutes:
+                description: The number of minutes a build is allowed to be queued
+                  before it times out.
+                format: int64
+                type: integer
+              secondaryArtifacts:
+                description: An array of ProjectArtifacts objects.
+                items:
+                  description: Information about the build output artifacts for the
+                    build project.
+                  properties:
+                    artifactIdentifier:
+                      type: string
+                    bucketOwnerAccess:
+                      description: "Specifies the access for objects that are uploaded
+                        to an Amazon S3 bucket that is owned by another account. \n
+                        By default, only the account that uploads the objects to the
+                        bucket has access to these objects. This property allows you
+                        to give the bucket owner access to these objects. \n NONE
+                        \n The bucket owner does not have access to the objects. This
+                        is the default. \n READ_ONLY \n The bucket owner has read
+                        only access to the objects. The uploading account retains
+                        ownership of the objects. \n FULL \n The bucket owner has
+                        full access to the objects. Object ownership is determined
+                        by the following criteria: \n    * If the bucket is configured
+                        with the Bucket owner preferred setting,    the bucket owner
+                        owns the objects. The uploading account will have object    access
+                        as specified by the bucket's policy. \n    * Otherwise, the
+                        uploading account retains ownership of the objects. \n For
+                        more information about Amazon S3 object ownership, see Controlling
+                        ownership of uploaded objects using S3 Object Ownership (https://docs.aws.amazon.com/AmazonS3/latest/userguide/about-object-ownership.html)
+                        in the Amazon Simple Storage Service User Guide."
+                      type: string
+                    encryptionDisabled:
+                      type: boolean
+                    location:
+                      type: string
+                    name:
+                      type: string
+                    namespaceType:
+                      type: string
+                    overrideArtifactName:
+                      type: boolean
+                    packaging:
+                      type: string
+                    path:
+                      type: string
+                    type_:
+                      type: string
+                  type: object
+                type: array
+              secondarySourceVersions:
+                description: An array of ProjectSourceVersion objects. If secondarySourceVersions
+                  is specified at the build level, then they take precedence over
+                  these secondarySourceVersions (at the project level).
+                items:
+                  description: A source identifier and its corresponding version.
+                  properties:
+                    sourceIdentifier:
+                      type: string
+                    sourceVersion:
+                      type: string
+                  type: object
+                type: array
+              secondarySources:
+                description: An array of ProjectSource objects.
+                items:
+                  description: Information about the build input source code for the
+                    build project.
+                  properties:
+                    auth:
+                      description: "Information about the authorization settings for
+                        AWS CodeBuild to access the source code to be built. \n This
+                        information is for the AWS CodeBuild console's use only. Your
+                        code should not get or set this information directly."
+                      properties:
+                        resource:
+                          type: string
+                        type_:
+                          type: string
+                      type: object
+                    buildStatusConfig:
+                      description: Contains information that defines how the AWS CodeBuild
+                        build project reports the build status to the source provider.
+                      properties:
+                        context:
+                          type: string
+                        targetURL:
+                          type: string
+                      type: object
+                    buildspec:
+                      type: string
+                    gitCloneDepth:
+                      format: int64
+                      type: integer
+                    gitSubmodulesConfig:
+                      description: Information about the Git submodules configuration
+                        for an AWS CodeBuild build project.
+                      properties:
+                        fetchSubmodules:
+                          type: boolean
+                      type: object
+                    insecureSSL:
+                      type: boolean
+                    location:
+                      type: string
+                    reportBuildStatus:
+                      type: boolean
+                    sourceIdentifier:
+                      type: string
+                    type_:
+                      type: string
+                  type: object
+                type: array
+              serviceRole:
+                description: The ARN of the AWS Identity and Access Management (IAM)
+                  role that enables AWS CodeBuild to interact with dependent AWS services
+                  on behalf of the AWS account.
+                type: string
+              source:
+                description: Information about the build input source code for the
+                  build project.
+                properties:
+                  auth:
+                    description: "Information about the authorization settings for
+                      AWS CodeBuild to access the source code to be built. \n This
+                      information is for the AWS CodeBuild console's use only. Your
+                      code should not get or set this information directly."
+                    properties:
+                      resource:
+                        type: string
+                      type_:
+                        type: string
+                    type: object
+                  buildStatusConfig:
+                    description: Contains information that defines how the AWS CodeBuild
+                      build project reports the build status to the source provider.
+                    properties:
+                      context:
+                        type: string
+                      targetURL:
+                        type: string
+                    type: object
+                  buildspec:
+                    type: string
+                  gitCloneDepth:
+                    format: int64
+                    type: integer
+                  gitSubmodulesConfig:
+                    description: Information about the Git submodules configuration
+                      for an AWS CodeBuild build project.
+                    properties:
+                      fetchSubmodules:
+                        type: boolean
+                    type: object
+                  insecureSSL:
+                    type: boolean
+                  location:
+                    type: string
+                  reportBuildStatus:
+                    type: boolean
+                  sourceIdentifier:
+                    type: string
+                  type_:
+                    type: string
+                type: object
+              sourceVersion:
+                description: "A version of the build input to be built for this project.
+                  If not specified, the latest version is used. If specified, it must
+                  be one of: \n    * For AWS CodeCommit: the commit ID, branch, or
+                  Git tag to use. \n    * For GitHub: the commit ID, pull request
+                  ID, branch name, or tag name    that corresponds to the version
+                  of the source code you want to build.    If a pull request ID is
+                  specified, it must use the format pr/pull-request-ID    (for example
+                  pr/25). If a branch name is specified, the branch's HEAD    commit
+                  ID is used. If not specified, the default branch's HEAD commit    ID
+                  is used. \n    * For Bitbucket: the commit ID, branch name, or tag
+                  name that corresponds    to the version of the source code you want
+                  to build. If a branch name    is specified, the branch's HEAD commit
+                  ID is used. If not specified, the    default branch's HEAD commit
+                  ID is used. \n    * For Amazon S3: the version ID of the object
+                  that represents the build    input ZIP file to use. \n If sourceVersion
+                  is specified at the build level, then that version takes precedence
+                  over this sourceVersion (at the project level). \n For more information,
+                  see Source Version Sample with CodeBuild (https://docs.aws.amazon.com/codebuild/latest/userguide/sample-source-version.html)
+                  in the AWS CodeBuild User Guide."
+                type: string
+              tags:
+                description: "A list of tag key and value pairs associated with this
+                  build project. \n These tags are available for use by AWS services
+                  that support AWS CodeBuild build project tags."
+                items:
+                  description: "A tag, consisting of a key and a value. \n This tag
+                    is available for use by AWS services that support tags in AWS
+                    CodeBuild."
+                  properties:
+                    key:
+                      type: string
+                    value:
+                      type: string
+                  type: object
+                type: array
+              timeoutInMinutes:
+                description: How long, in minutes, from 5 to 480 (8 hours), for AWS
+                  CodeBuild to wait before it times out any build that has not been
+                  marked as completed. The default is 60 minutes.
+                format: int64
+                type: integer
+              vpcConfig:
+                description: VpcConfig enables AWS CodeBuild to access resources in
+                  an Amazon VPC.
+                properties:
+                  securityGroupIDs:
+                    items:
+                      type: string
+                    type: array
+                  subnets:
+                    items:
+                      type: string
+                    type: array
+                  vpcID:
+                    type: string
+                type: object
+            required:
+            - artifacts
+            - environment
+            - name
+            - serviceRole
+            - source
+            type: object
+          status:
+            description: ProjectStatus defines the observed state of Project
+            properties:
+              ackResourceMetadata:
+                description: All CRs managed by ACK have a common `Status.ACKResourceMetadata`
+                  member that is used to contain resource sync state, account ownership,
+                  constructed ARN for the resource
+                properties:
+                  arn:
+                    description: 'ARN is the Amazon Resource Name for the resource.
+                      This is a globally-unique identifier and is set only by the
+                      ACK service controller once the controller has orchestrated
+                      the creation of the resource OR when it has verified that an
+                      "adopted" resource (a resource where the ARN annotation was
+                      set by the Kubernetes user on the CR) exists and matches the
+                      supplied CR''s Spec field values. TODO(vijat@): Find a better
+                      strategy for resources that do not have ARN in CreateOutputResponse
+                      https://github.com/aws/aws-controllers-k8s/issues/270'
+                    type: string
+                  ownerAccountID:
+                    description: OwnerAccountID is the AWS Account ID of the account
+                      that owns the backend AWS service API resource.
+                    type: string
+                required:
+                - ownerAccountID
+                type: object
+              badge:
+                description: Information about the build badge for the build project.
+                properties:
+                  badgeEnabled:
+                    type: boolean
+                  badgeRequestURL:
+                    type: string
+                type: object
+              conditions:
+                description: All CRS managed by ACK have a common `Status.Conditions`
+                  member that contains a collection of `ackv1alpha1.Condition` objects
+                  that describe the various terminal states of the CR and its backend
+                  AWS service API resource
+                items:
+                  description: Condition is the common struct used by all CRDs managed
+                    by ACK service controllers to indicate terminal states  of the
+                    CR and its backend AWS service API resource
+                  properties:
+                    lastTransitionTime:
+                      description: Last time the condition transitioned from one status
+                        to another.
+                      format: date-time
+                      type: string
+                    message:
+                      description: A human readable message indicating details about
+                        the transition.
+                      type: string
+                    reason:
+                      description: The reason for the condition's last transition.
+                      type: string
+                    status:
+                      description: Status of the condition, one of True, False, Unknown.
+                      type: string
+                    type:
+                      description: Type is the type of the Condition
+                      type: string
+                  required:
+                  - status
+                  - type
+                  type: object
+                type: array
+              created:
+                description: When the build project was created, expressed in Unix
+                  time format.
+                format: date-time
+                type: string
+              lastModified:
+                description: When the build project's settings were last modified,
+                  expressed in Unix time format.
+                format: date-time
+                type: string
+              webhook:
+                description: Information about a webhook that connects repository
+                  events to a build project in AWS CodeBuild.
+                properties:
+                  branchFilter:
+                    type: string
+                  buildType:
+                    type: string
+                  filterGroups:
+                    items:
+                      items:
+                        description: A filter used to determine which webhooks trigger
+                          a build.
+                        properties:
+                          excludeMatchedPattern:
+                            type: boolean
+                          pattern:
+                            type: string
+                          type_:
+                            type: string
+                        type: object
+                      type: array
+                    type: array
+                  lastModifiedSecret:
+                    format: date-time
+                    type: string
+                  payloadURL:
+                    type: string
+                  secret:
+                    type: string
+                  url:
+                    type: string
+                type: object
+            required:
+            - ackResourceMetadata
+            - conditions
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
